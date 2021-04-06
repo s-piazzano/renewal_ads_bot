@@ -16,6 +16,7 @@ const renewalBot = {
       console.log(`Login su ${service.url} effettuato`);
       //Verifico closePage e chiudo
       if (service.closePage) {
+        await page.waitForTimeout(2000);
         await page.close();
       }
       await page.waitForTimeout(2000);
@@ -23,7 +24,7 @@ const renewalBot = {
   is_present: async (page, xpath) => {
     if (
       await page
-        .waitForXPath(xpath, { visible: true, timeout: 2000 })
+        .waitForXPath(xpath, { visible: true, timeout: 3000 })
         .catch(() => false)
     ) {
       return true;
