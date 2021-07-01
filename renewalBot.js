@@ -24,7 +24,7 @@ const renewalBot = {
   is_present: async (page, xpath) => {
     if (
       await page
-        .waitForXPath(xpath, { visible: true, timeout: 3000 })
+        .waitForXPath(xpath, { visible: true, timeout: 4000 })
         .catch(() => false)
     ) {
       return true;

@@ -15,11 +15,11 @@ let subito_counter = 0;
 const mailTitleXpath =
   "/html/body/div[7]/div[3]/div/div[2]/div[1]/div[2]/div/div/div/div/div[2]/div/div[1]/div/div[2]/div[4]/div[2]/div/table/tbody/tr/td[5]/div[2]/span/span";
 const folderXpath =
-  "/html/body/div[7]/div[3]/div/div[2]/div[1]/div[1]/div[1]/div/div/div/div[2]/div/div/div[1]/div[5]/div/div[4]/div/div/div[3]/span/a";
+  "/html/body/div[7]/div[3]/div/div[2]/div[1]/div[1]/div[1]/div/div/div/div[2]/div/div/div[1]/div[3]/div/div[4]/div/div/div[3]/span/a";
 const kijijiBtnXpath =
   "/html/body/div[7]/div[3]/div/div[2]/div[1]/div[2]/div/div/div/div/div[2]/div/div[1]/div/div[3]/div/table/tr/td[1]/div[2]/div[2]/div/div[3]/div/div/div/div/div/div[1]/div[2]/div[3]/div[3]/div/div[1]/table/tbody/tr/td/table[3]/tbody/tr/td/table/tbody/tr[2]/td/table/tbody/tr/td[2]/a";
 const subitoBtnXpath =
-  "/html/body/div[7]/div[3]/div/div[2]/div[1]/div[2]/div/div/div/div/div[2]/div/div[1]/div/div[3]/div/table/tr/td[1]/div[2]/div[2]/div/div[3]/div/div/div/div/div/div[1]/div[2]/div[3]/div[3]/div/div[1]/table/tbody/tr[2]/td/table[1]/tbody/tr/td/table[3]/tbody/tr[6]/td/center/div/div/table/tbody/tr/td/a/span";
+  "/html/body/div[7]/div[3]/div/div[2]/div[1]/div[2]/div/div/div/div/div[2]/div/div[1]/div/div[3]/div/table/tr/td[1]/div[2]/div[2]/div/div[3]/div/div/div/div/div/div[1]/div[2]/div[3]/div[3]/div[1]/div/div/a[2]";
 const subitoRenewalBtnXpath =
   "/html/body/div[2]/div/div/div[3]/div/div/form/div[3]/div/a";
 const subitoCoockieBtnXpath =
@@ -36,6 +36,7 @@ const services = [
     psw: process.env.GMAIL_PSW,
     closePage: false,
   },
+
   {
     url: "https://areariservata.subito.it/login_form",
     email: process.env.EMAIL,
@@ -84,7 +85,7 @@ const services = [
             await pages[0].waitForTimeout(1000);
           }
           break;
-        case "no.reply":
+        case "Subito":
           renewalBot.click_xpath(pages[0], mailTitleXpath);
           await pages[0].waitForTimeout(1000);
           if (await renewalBot.is_present(pages[0], subitoBtnXpath)) {
@@ -92,26 +93,16 @@ const services = [
             await renewalBot.click_xpath(pages[0], subitoBtnXpath);
             await pages[0].waitForTimeout(3000);
             pages = await broswer.pages();
-            if (await renewalBot.is_present(pages[1], subitoRenewalBtnXpath)) {
-              if (
-                await renewalBot.is_present(pages[1], subitoCoockieBtnXpath)
-              ) {
-                await renewalBot.click_xpath(pages[1], subitoCoockieBtnXpath);
-              }
-              await renewalBot.click_xpath(pages[1], subitoRenewalBtnXpath);
-              await pages[1].waitForTimeout(2000);
-              console.log("Rinnovato!");
-              subito_counter += 1;
-            }
-            pages = await broswer.pages();
             await pages[1].goto("about:blank");
             await pages[1].close();
+            console.log("Rinnovato!");
+            subito_counter += 1;
             //Cestino l'email
             await renewalBot.click_xpath(pages[0], trashBtnXpath);
             //Aspetto 1 s.
             await pages[0].waitForTimeout(1000);
           } else {
-            await renewalBot.click_xpath(pages[0], trashBtnXpath);
+            console.log("Bottune Subito non trovato");
             await pages[0].waitForTimeout(1000);
           }
           break;
@@ -126,9 +117,9 @@ const services = [
     console.log(
       `Processo Terminato!\nAnnunci Kijiji rinnovati: ${kijiji_counter}\nAnnunci Subito rinnovati: ${subito_counter}\nIn chiusura.`
     );
-    //await broswer.close();
+    await broswer.close();
   } else {
     console.log("Nessuna mail presente!\nIn chiusura.");
-    //await broswer.close();
+    await broswer.close();
   }
 })();
